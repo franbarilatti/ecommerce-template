@@ -1,0 +1,79 @@
+# ============================================
+# FILE: src/main/resources/application-prod.yml
+# Propósito: Configuración para entorno de PRODUCCIÓN
+# Uso: Se activa con spring.profiles.active=prod
+# ============================================
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  # Base de datos de producción (Variables de entorno)
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  # Thymeleaf con cache en producción
+  thymeleaf:
+    cache: true
+
+# Logging moderado en producción
+logging:
+  level:
+    root: INFO
+    com.aguardi: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+  file:
+    name: logs/aguardi-backend.log
+    max-size: 10MB
+    max-history: 30
+
+# JWT desde variables de entorno
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+# CORS restrictivo en producción
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
+# Cloudinary habilitado en producción
+cloudinary:
+  enabled: true
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+
+storage:
+  type: cloudinary
+
+# MercadoPago en modo producción
+mercadopago:
+  access-token: ${MERCADOPAGO_ACCESS_TOKEN}
+  public-key: ${MERCADOPAGO_PUBLIC_KEY}
+  webhook-secret: ${MERCADOPAGO_WEBHOOK_SECRET}
+  success-url: ${MERCADOPAGO_SUCCESS_URL}
+  failure-url: ${MERCADOPAGO_FAILURE_URL}
+  pending-url: ${MERCADOPAGO_PENDING_URL}
+
+# WhatsApp habilitado en producción
+whatsapp:
+  enabled: true
+  phone-number: ${WHATSAPP_PHONE}
+  api-url: ${WHATSAPP_API_URL}
+  api-token: ${WHATSAPP_API_TOKEN}
+
+# URLs de producción
+app:
+  frontend-url: ${FRONTEND_URL}
+  admin-email: ${ADMIN_EMAIL}
+  support-email: ${SUPPORT_EMAIL}

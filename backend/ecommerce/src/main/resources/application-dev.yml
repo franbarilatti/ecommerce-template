@@ -1,0 +1,66 @@
+# ============================================
+# FILE: src/main/resources/application-dev.yml
+# Propósito: Configuración para entorno de DESARROLLO
+# Uso: Se activa con spring.profiles.active=dev
+# ============================================
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  # Base de datos de desarrollo (PostgreSQL local o H2)
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/aguardi_dev}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Flyway maneja las migraciones
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # DevTools
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+# Logging más verbose en desarrollo
+logging:
+  level:
+    root: INFO
+    com.aguardi: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+
+# JWT con clave simple para desarrollo
+jwt:
+  secret: dev-secret-key-not-for-production-aguardi-2024-minimum-256-bits
+  expiration: 86400000  # 24 horas
+
+# CORS permisivo en desarrollo
+cors:
+  allowed-origins: "*"
+
+# Cloudinary deshabilitado en dev (usar storage local)
+cloudinary:
+  enabled: false
+
+storage:
+  type: local
+  local:
+    upload-dir: ./uploads
+    base-url: http://localhost:8080/api/storage/files
+
+# MercadoPago en modo sandbox
+mercadopago:
+  access-token: TEST-your-test-token-here
+  public-key: TEST-your-public-key-here
+
+---

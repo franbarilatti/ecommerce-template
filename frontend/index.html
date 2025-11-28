@@ -1,0 +1,270 @@
+<!-- 
+FILE: index.html
+Propósito: Landing page principal de AGUARDI
+Descripción: Página de inicio con hero section, categorías, productos destacados y footer
+Uso: Punto de entrada principal del sitio web
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AGUARDI - Ropa infantil y de fiesta. Vestidos, trajes, accesorios y más para tus momentos especiales.">
+    <meta name="keywords" content="ropa infantil, ropa de fiesta, vestidos, trajes, accesorios, Mar del Plata">
+    <title>AGUARDI - Vistiendo momentos especiales</title>
+    <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="container nav-container">
+            <!-- Logo -->
+            <div class="nav-logo">
+                <div class="logo-circle">
+                    <span class="logo-letter">A</span>
+                </div>
+                <span class="brand-name">AGUARDI</span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="nav-menu" id="navMenu">
+                <a href="#inicio" class="nav-link">Inicio</a>
+                <a href="catalog.html" class="nav-link">Catálogo</a>
+                <a href="#novedades" class="nav-link">Novedades</a>
+                <a href="#contacto" class="nav-link">Contacto</a>
+            </div>
+
+            <!-- Right Icons -->
+            <div class="nav-actions">
+                <a href="cart.html" class="nav-icon" aria-label="Carrito de compras">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <a href="login.html" class="btn btn-primary nav-btn">Iniciar Sesión</a>
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+                    <span class="hamburger"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="nav-mobile" id="navMobile">
+            <a href="#inicio" class="nav-link-mobile">Inicio</a>
+            <a href="catalog.html" class="nav-link-mobile">Catálogo</a>
+            <a href="#novedades" class="nav-link-mobile">Novedades</a>
+            <a href="#contacto" class="nav-link-mobile">Contacto</a>
+            <a href="login.html" class="btn btn-primary btn-mobile">Iniciar Sesión</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Vestimos tus momentos especiales</h1>
+                <p class="hero-subtitle">
+                    Ropa infantil y de fiesta para que cada celebración sea inolvidable. 
+                    Trajes, vestidos, accesorios y más.
+                </p>
+                <div class="hero-buttons">
+                    <a href="catalog.html" class="btn btn-primary btn-lg">Ver Catálogo</a>
+                    <a href="#novedades" class="btn btn-outline btn-lg">Novedades</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="image-placeholder">
+                    <span class="placeholder-icon">👔</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories" id="categorias">
+        <div class="container">
+            <h2 class="section-title">Categorías</h2>
+            <div class="categories-grid">
+                <a href="catalog.html?category=bebe" class="category-card category-baby">
+                    <div class="category-icon">👶</div>
+                    <h3 class="category-name">Bebé</h3>
+                </a>
+                <a href="catalog.html?category=nino" class="category-card category-boy">
+                    <div class="category-icon">👦</div>
+                    <h3 class="category-name">Niño</h3>
+                </a>
+                <a href="catalog.html?category=nina" class="category-card category-girl">
+                    <div class="category-icon">👧</div>
+                    <h3 class="category-name">Niña</h3>
+                </a>
+                <a href="catalog.html?category=fiesta" class="category-card category-party">
+                    <div class="category-icon">🎉</div>
+                    <h3 class="category-name">Fiesta</h3>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="featured-products" id="novedades">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Productos Destacados</h2>
+                <a href="catalog.html" class="view-all">Ver todos →</a>
+            </div>
+            
+            <div class="products-grid" id="featuredProducts">
+                <!-- Los productos se cargarán dinámicamente con JavaScript -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <div class="image-placeholder">
+                            <span class="placeholder-icon">👔</span>
+                        </div>
+                        <span class="product-badge badge-new">NUEVO</span>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Traje Elegante Niño</h3>
+                        <p class="product-description">Perfecto para bodas y eventos especiales</p>
+                        <div class="product-footer">
+                            <span class="product-price">$12.990</span>
+                            <button class="btn-icon" aria-label="Agregar al carrito">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <div class="image-placeholder">
+                            <span class="placeholder-icon">👗</span>
+                        </div>
+                        <span class="product-badge badge-sale">OFERTA</span>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Vestido de Fiesta Niña</h3>
+                        <p class="product-description">Elegante y cómodo para cualquier ocasión</p>
+                        <div class="product-footer">
+                            <span class="product-price">$15.990</span>
+                            <button class="btn-icon" aria-label="Agregar al carrito">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <div class="image-placeholder">
+                            <span class="placeholder-icon">🎀</span>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Set de Accesorios</h3>
+                        <p class="product-description">Moños, tiradores y corbatas</p>
+                        <div class="product-footer">
+                            <span class="product-price">$3.990</span>
+                            <button class="btn-icon" aria-label="Agregar al carrito">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Calidad Premium</h3>
+                    <p class="feature-text">Materiales de primera calidad para los mejores momentos</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Diseños Únicos</h3>
+                    <p class="feature-text">Exclusivos modelos para cada ocasión especial</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Atención Personalizada</h3>
+                    <p class="feature-text">Te asesoramos para encontrar el look perfecto</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contacto">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h4 class="footer-title">AGUARDI</h4>
+                <p class="footer-text">Vistiendo momentos especiales desde 2020</p>
+            </div>
+            <div class="footer-col">
+                <h5 class="footer-heading">Enlaces</h5>
+                <ul class="footer-links">
+                    <li><a href="catalog.html">Catálogo</a></li>
+                    <li><a href="#novedades">Novedades</a></li>
+                    <li><a href="#sobre-nosotros">Sobre nosotros</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5 class="footer-heading">Contacto</h5>
+                <ul class="footer-contact">
+                    <li>📧 info@aguardi.com</li>
+                    <li>📱 WhatsApp: +54 9 223 XXX-XXXX</li>
+                    <li>📍 Mar del Plata, Buenos Aires, AR</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5 class="footer-heading">Síguenos</h5>
+                <div class="footer-social">
+                    <a href="#" class="social-link" aria-label="Facebook">📘</a>
+                    <a href="#" class="social-link" aria-label="Instagram">📷</a>
+                    <a href="#" class="social-link" aria-label="WhatsApp">💬</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 AGUARDI. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts/main.js"></script>
+</body>
+</html>
