@@ -6,319 +6,419 @@ Uso: Accesible desde el menú de usuario logueado
 -->
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Mi Perfil - AGUARDI">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Mi Perfil - AGUARDI" />
     <title>Mi Perfil - AGUARDI</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/profile.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/profile.css" />
+  </head>
+  <body>
     <!-- Navigation -->
     <nav class="navbar" role="navigation" aria-label="Navegación principal">
-        <div class="container nav-container">
-            <div class="nav-logo">
-                <div class="logo-circle">
-                    <span class="logo-letter">A</span>
-                </div>
-                <a href="index.html" class="brand-name">AGUARDI</a>
-            </div>
-
-            <div class="nav-menu" id="navMenu">
-                <a href="index.html" class="nav-link">Inicio</a>
-                <a href="catalog.html" class="nav-link">Catálogo</a>
-                <a href="index.html#novedades" class="nav-link">Novedades</a>
-                <a href="index.html#contacto" class="nav-link">Contacto</a>
-            </div>
-
-            <div class="nav-actions">
-                <a href="cart.html" class="nav-icon" aria-label="Carrito de compras">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    <span class="cart-count" id="cartCount">0</span>
-                </a>
-                <a href="profile.html" class="btn btn-primary nav-btn">Mi Cuenta</a>
-                <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
-                    <span class="hamburger"></span>
-                </button>
-            </div>
+      <div class="container nav-container">
+        <div class="nav-logo">
+          <div class="logo-circle">
+            <span class="logo-letter">A</span>
+          </div>
+          <a href="index.html" class="brand-name">AGUARDI</a>
         </div>
 
-        <div class="nav-mobile" id="navMobile">
-            <a href="index.html" class="nav-link-mobile">Inicio</a>
-            <a href="catalog.html" class="nav-link-mobile">Catálogo</a>
-            <a href="index.html#novedades" class="nav-link-mobile">Novedades</a>
-            <a href="index.html#contacto" class="nav-link-mobile">Contacto</a>
+        <div class="nav-menu" id="navMenu">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="catalog.html" class="nav-link">Catálogo</a>
+          <a href="index.html#novedades" class="nav-link">Novedades</a>
+          <a href="index.html#contacto" class="nav-link">Contacto</a>
         </div>
+
+        <div class="nav-actions">
+          <a href="cart.html" class="nav-icon" aria-label="Carrito de compras">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path
+                d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+              ></path>
+            </svg>
+            <span class="cart-count" id="cartCount">0</span>
+          </a>
+          <a href="profile.html" class="btn btn-primary nav-btn">Mi Cuenta</a>
+          <button
+            class="nav-toggle"
+            id="navToggle"
+            aria-label="Abrir menú"
+            aria-expanded="false"
+          >
+            <span class="hamburger"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="nav-mobile" id="navMobile">
+        <a href="index.html" class="nav-link-mobile">Inicio</a>
+        <a href="catalog.html" class="nav-link-mobile">Catálogo</a>
+        <a href="index.html#novedades" class="nav-link-mobile">Novedades</a>
+        <a href="index.html#contacto" class="nav-link-mobile">Contacto</a>
+      </div>
     </nav>
 
     <!-- Profile Section -->
     <section class="profile-section">
-        <div class="container">
-            <div class="profile-layout">
-                <!-- Sidebar -->
-                <aside class="profile-sidebar">
-                    <div class="profile-card">
-                        <div class="profile-avatar">
-                            <span class="avatar-initial" id="userInitial">U</span>
-                        </div>
-                        <h3 class="profile-name" id="userName">Usuario</h3>
-                        <p class="profile-email" id="userEmail">email@ejemplo.com</p>
-                    </div>
-
-                    <nav class="profile-nav">
-                        <a href="#personal-info" class="profile-nav-link active" data-tab="personal-info">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                            <span>Información Personal</span>
-                        </a>
-                        <a href="#orders" class="profile-nav-link" data-tab="orders">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-                            <span>Mis Pedidos</span>
-                            <span class="badge" id="ordersBadge">0</span>
-                        </a>
-                        <a href="#security" class="profile-nav-link" data-tab="security">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                            </svg>
-                            <span>Seguridad</span>
-                        </a>
-                        <button class="profile-nav-link logout-btn" id="logoutBtn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                                <polyline points="16 17 21 12 16 7"></polyline>
-                                <line x1="21" y1="12" x2="9" y2="12"></line>
-                            </svg>
-                            <span>Cerrar Sesión</span>
-                        </button>
-                    </nav>
-                </aside>
-
-                <!-- Main Content -->
-                <main class="profile-main">
-                    <!-- Personal Info Tab -->
-                    <div class="profile-tab active" id="personal-info-tab">
-                        <div class="tab-header">
-                            <h2 class="tab-title">Información Personal</h2>
-                            <p class="tab-subtitle">Actualiza tus datos personales</p>
-                        </div>
-
-                        <div class="profile-content-card">
-                            <form id="personalInfoForm" class="profile-form">
-                                <div class="form-section">
-                                    <h3 class="form-section-title">Datos Básicos</h3>
-                                    
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="fullName" class="form-label">Nombre Completo</label>
-                                            <input 
-                                                type="text" 
-                                                id="fullName" 
-                                                class="form-input" 
-                                                required
-                                            >
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="email" class="form-label">Email</label>
-                                            <input 
-                                                type="email" 
-                                                id="email" 
-                                                class="form-input" 
-                                                required
-                                                disabled
-                                            >
-                                            <span class="form-hint">El email no se puede modificar</span>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="phone" class="form-label">Teléfono</label>
-                                            <input 
-                                                type="tel" 
-                                                id="phone" 
-                                                class="form-input"
-                                                required
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-actions">
-                                    <button type="button" class="btn btn-outline" id="cancelEdit">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Orders Tab -->
-                    <div class="profile-tab" id="orders-tab">
-                        <div class="tab-header">
-                            <h2 class="tab-title">Mis Pedidos</h2>
-                            <p class="tab-subtitle">Revisa el estado de tus compras</p>
-                        </div>
-
-                        <div class="orders-list" id="ordersList">
-                            <!-- Se genera dinámicamente -->
-                        </div>
-
-                        <div class="empty-state" id="ordersEmpty" style="display: none;">
-                            <div class="empty-icon">📦</div>
-                            <h3 class="empty-title">No tienes pedidos</h3>
-                            <p class="empty-text">Cuando realices una compra, aparecerá aquí</p>
-                            <a href="catalog.html" class="btn btn-primary">Ver Catálogo</a>
-                        </div>
-                    </div>
-
-                    <!-- Security Tab -->
-                    <div class="profile-tab" id="security-tab">
-                        <div class="tab-header">
-                            <h2 class="tab-title">Seguridad</h2>
-                            <p class="tab-subtitle">Gestiona la seguridad de tu cuenta</p>
-                        </div>
-
-                        <div class="profile-content-card">
-                            <form id="passwordForm" class="profile-form">
-                                <div class="form-section">
-                                    <h3 class="form-section-title">Cambiar Contraseña</h3>
-                                    
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="currentPassword" class="form-label">Contraseña Actual</label>
-                                            <input 
-                                                type="password" 
-                                                id="currentPassword" 
-                                                class="form-input"
-                                                required
-                                            >
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="newPassword" class="form-label">Nueva Contraseña</label>
-                                            <input 
-                                                type="password" 
-                                                id="newPassword" 
-                                                class="form-input"
-                                                required
-                                            >
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="confirmNewPassword" class="form-label">Confirmar Nueva Contraseña</label>
-                                            <input 
-                                                type="password" 
-                                                id="confirmNewPassword" 
-                                                class="form-input"
-                                                required
-                                            >
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="profile-content-card" style="margin-top: 2rem;">
-                            <div class="form-section">
-                                <h3 class="form-section-title">Eliminar Cuenta</h3>
-                                <p class="form-hint" style="margin-bottom: 1rem;">
-                                    Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor, está seguro.
-                                </p>
-                                <button class="btn btn-outline" style="color: #EF4444; border-color: #EF4444;" id="deleteAccountBtn">
-                                    Eliminar mi cuenta
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </main>
+      <div class="container">
+        <div class="profile-layout">
+          <!-- Sidebar -->
+          <aside class="profile-sidebar">
+            <div class="profile-card">
+              <div class="profile-avatar">
+                <span class="avatar-initial" id="userInitial">U</span>
+              </div>
+              <h3 class="profile-name" id="userName">Usuario</h3>
+              <p class="profile-email" id="userEmail">email@ejemplo.com</p>
             </div>
+
+            <nav class="profile-nav">
+              <a
+                href="#personal-info"
+                class="profile-nav-link active"
+                data-tab="personal-info"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Información Personal</span>
+              </a>
+              <a href="#orders" class="profile-nav-link" data-tab="orders">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path
+                    d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+                  ></path>
+                </svg>
+                <span>Mis Pedidos</span>
+                <span class="badge" id="ordersBadge">0</span>
+              </a>
+              <a href="#security" class="profile-nav-link" data-tab="security">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect
+                    x="3"
+                    y="11"
+                    width="18"
+                    height="11"
+                    rx="2"
+                    ry="2"
+                  ></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>Seguridad</span>
+              </a>
+              <button class="profile-nav-link logout-btn" id="logoutBtn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Cerrar Sesión</span>
+              </button>
+            </nav>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="profile-main">
+            <!-- Personal Info Tab -->
+            <div class="profile-tab active" id="personal-info-tab">
+              <div class="tab-header">
+                <h2 class="tab-title">Información Personal</h2>
+                <p class="tab-subtitle">Actualiza tus datos personales</p>
+              </div>
+
+              <div class="profile-content-card">
+                <form id="personalInfoForm" class="profile-form">
+                  <div class="form-section">
+                    <h3 class="form-section-title">Datos Básicos</h3>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="fullName" class="form-label"
+                          >Nombre Completo</label
+                        >
+                        <input
+                          type="text"
+                          id="fullName"
+                          class="form-input"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input
+                          type="email"
+                          id="email"
+                          class="form-input"
+                          required
+                          disabled
+                        />
+                        <span class="form-hint"
+                          >El email no se puede modificar</span
+                        >
+                      </div>
+
+                      <div class="form-group">
+                        <label for="phone" class="form-label">Teléfono</label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          class="form-input"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      id="cancelEdit"
+                    >
+                      Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Guardar Cambios
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div class="profile-tab" id="orders-tab">
+              <div class="tab-header">
+                <h2 class="tab-title">Mis Pedidos</h2>
+                <p class="tab-subtitle">Revisa el estado de tus compras</p>
+              </div>
+
+              <div class="orders-list" id="ordersList">
+                <!-- Se genera dinámicamente -->
+              </div>
+
+              <div class="empty-state" id="ordersEmpty" style="display: none">
+                <div class="empty-icon">📦</div>
+                <h3 class="empty-title">No tienes pedidos</h3>
+                <p class="empty-text">
+                  Cuando realices una compra, aparecerá aquí
+                </p>
+                <a href="catalog.html" class="btn btn-primary">Ver Catálogo</a>
+              </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div class="profile-tab" id="security-tab">
+              <div class="tab-header">
+                <h2 class="tab-title">Seguridad</h2>
+                <p class="tab-subtitle">Gestiona la seguridad de tu cuenta</p>
+              </div>
+
+              <div class="profile-content-card">
+                <form id="passwordForm" class="profile-form">
+                  <div class="form-section">
+                    <h3 class="form-section-title">Cambiar Contraseña</h3>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="currentPassword" class="form-label"
+                          >Contraseña Actual</label
+                        >
+                        <input
+                          type="password"
+                          id="currentPassword"
+                          class="form-input"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="newPassword" class="form-label"
+                          >Nueva Contraseña</label
+                        >
+                        <input
+                          type="password"
+                          id="newPassword"
+                          class="form-input"
+                          required
+                        />
+                      </div>
+
+                      <div class="form-group">
+                        <label for="confirmNewPassword" class="form-label"
+                          >Confirmar Nueva Contraseña</label
+                        >
+                        <input
+                          type="password"
+                          id="confirmNewPassword"
+                          class="form-input"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                      Actualizar Contraseña
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="profile-content-card" style="margin-top: 2rem">
+                <div class="form-section">
+                  <h3 class="form-section-title">Eliminar Cuenta</h3>
+                  <p class="form-hint" style="margin-bottom: 1rem">
+                    Una vez que elimines tu cuenta, no hay vuelta atrás. Por
+                    favor, está seguro.
+                  </p>
+                  <button
+                    class="btn btn-outline"
+                    style="color: #ef4444; border-color: #ef4444"
+                    id="deleteAccountBtn"
+                  >
+                    Eliminar mi cuenta
+                  </button>
+                </div>
+              </div>
+            </div>
+          </main>
         </div>
+      </div>
     </section>
 
     <!-- Order Detail Modal -->
     <div class="modal" id="orderDetailModal">
-        <div class="modal-backdrop"></div>
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Detalle del Pedido</h3>
-                    <button class="modal-close" id="orderDetailClose">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                </div>
-                <div class="modal-body" id="orderDetailBody">
-                    <!-- Se genera dinámicamente -->
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" id="orderDetailClose2">Cerrar</button>
-                </div>
-            </div>
+      <div class="modal-backdrop"></div>
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Detalle del Pedido</h3>
+            <button class="modal-close" id="orderDetailClose">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body" id="orderDetailBody">
+            <!-- Se genera dinámicamente -->
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline" id="orderDetailClose2">
+              Cerrar
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container footer-container">
-            <div class="footer-col">
-                <h4 class="footer-title">AGUARDI</h4>
-                <p class="footer-text">Vistiendo momentos especiales desde 2020</p>
-            </div>
-            <div class="footer-col">
-                <h5 class="footer-heading">Enlaces</h5>
-                <ul class="footer-links">
-                    <li><a href="catalog.html">Catálogo</a></li>
-                    <li><a href="index.html#novedades">Novedades</a></li>
-                    <li><a href="#sobre-nosotros">Sobre nosotros</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5 class="footer-heading">Contacto</h5>
-                <ul class="footer-contact">
-                    <li>📧 info@aguardi.com</li>
-                    <li>📱 WhatsApp: +54 9 223 XXX-XXXX</li>
-                    <li>📍 Mar del Plata, Buenos Aires, AR</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h5 class="footer-heading">Síguenos</h5>
-                <div class="footer-social">
-                    <a href="#" class="social-link" aria-label="Facebook">📘</a>
-                    <a href="#" class="social-link" aria-label="Instagram">📷</a>
-                    <a href="#" class="social-link" aria-label="WhatsApp">💬</a>
-                </div>
-            </div>
+      <div class="container footer-container">
+        <div class="footer-col">
+          <h4 class="footer-title">AGUARDI</h4>
+          <p class="footer-text">Vistiendo momentos especiales desde 2020</p>
         </div>
-        <div class="footer-bottom">
-            <div class="container">
-                <p>&copy; 2025 AGUARDI. Todos los derechos reservados.</p>
-            </div>
+        <div class="footer-col">
+          <h5 class="footer-heading">Enlaces</h5>
+          <ul class="footer-links">
+            <li><a href="catalog.html">Catálogo</a></li>
+            <li><a href="index.html#novedades">Novedades</a></li>
+            <li><a href="#sobre-nosotros">Sobre nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
         </div>
+        <div class="footer-col">
+          <h5 class="footer-heading">Contacto</h5>
+          <ul class="footer-contact">
+            <li>📧 info@aguardi.com</li>
+            <li>📱 WhatsApp: +54 9 223 XXX-XXXX</li>
+            <li>📍 Mar del Plata, Buenos Aires, AR</li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5 class="footer-heading">Síguenos</h5>
+          <div class="footer-social">
+            <a href="#" class="social-link" aria-label="Facebook">📘</a>
+            <a href="#" class="social-link" aria-label="Instagram">📷</a>
+            <a href="#" class="social-link" aria-label="WhatsApp">💬</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container">
+          <p>&copy; 2025 AGUARDI. Todos los derechos reservados.</p>
+        </div>
+      </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="scripts/main.js"></script>
-    <script src="scripts/profile.js"></script>
-</body>
+    <script src="/scripts/api.js"></script>
+    <script src="/scripts/auth.js"></script>
+    <script src="/scripts/profile.js"></script>
+  </body>
 </html>

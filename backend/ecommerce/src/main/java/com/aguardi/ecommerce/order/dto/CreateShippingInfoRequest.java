@@ -3,7 +3,7 @@
 // Propósito: DTO para crear información de envío
 // ============================================
 
-package com.aguardi.order.dto;
+package com.aguardi.ecommerce.order.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

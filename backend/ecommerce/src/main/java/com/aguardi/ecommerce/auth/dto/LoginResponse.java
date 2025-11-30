@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginResponse {
     private String token;
-    private String tokenType;
+
     private Long expiresIn; // En milisegundos
 
     // Información del usuario

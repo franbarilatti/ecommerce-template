@@ -5,7 +5,7 @@
 
 package com.aguardi.ecommerce.order.mapper;
 
-import com.aguardi.order.dto.CreateShippingInfoRequest;
+import com.aguardi.ecommerce.order.dto.CreateShippingInfoRequest;
 import com.aguardi.ecommerce.order.dto.ShippingInfoDTO;
 import com.aguardi.ecommerce.order.entity.ShippingInfo;
 import org.mapstruct.*;

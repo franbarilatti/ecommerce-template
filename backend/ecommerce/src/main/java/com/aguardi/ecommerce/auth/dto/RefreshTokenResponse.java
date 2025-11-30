@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RefreshTokenResponse {
     private String token;
-    private String tokenType;
+
     private Long expiresIn;
 
     @Builder.Default

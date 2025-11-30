@@ -3,551 +3,440 @@
 // Descripción: Validación de formulario, cálculo de totales, procesamiento de pedido
 // Uso: Importar en checkout.html después de main.js
 
-(function() {
-    'use strict';
 
-    // ===== CONFIGURACIÓN =====
-    const CONFIG = {
-        SHIPPING_COST: 2000,
-        SHIPPING_FREE_THRESHOLD: 50000,
-        WHATSAPP_NUMBER: '5492231234567'
-    };
+// ============================================
+// FILE: frontend/scripts/checkout.js (ACTUALIZADO)
+// Propósito: Proceso de checkout conectado con el backend
+// ============================================
 
-    // ===== ESTADO =====
-    let state = {
-        cart: [],
-        subtotal: 0,
-        shipping: 0,
-        total: 0,
-        formData: {}
-    };
+let selectedAddress = null;
+let shippingCost = 0;
 
-    // ===== ELEMENTOS DEL DOM =====
-    const elements = {
-        // Form
-        checkoutForm: document.getElementById('checkoutForm'),
-        
-        // Inputs
-        fullName: document.getElementById('fullName'),
-        email: document.getElementById('email'),
-        phone: document.getElementById('phone'),
-        province: document.getElementById('province'),
-        city: document.getElementById('city'),
-        address: document.getElementById('address'),
-        postalCode: document.getElementById('postalCode'),
-        addressDetails: document.getElementById('addressDetails'),
-        notes: document.getElementById('notes'),
-        terms: document.getElementById('terms'),
-        
-        // Payment method
-        paymentMethods: document.querySelectorAll('input[name="paymentMethod"]'),
-        
-        // Summary
-        summaryProducts: document.getElementById('summaryProducts'),
-        summarySubtotal: document.getElementById('summarySubtotal'),
-        summaryShipping: document.getElementById('summaryShipping'),
-        summaryTotal: document.getElementById('summaryTotal')
-    };
+// ========================================
+// CARGAR DATOS INICIALES
+// ========================================
 
-    // ===== UTILIDADES =====
-
-    /**
-     * Obtener ícono según categoría
-     */
-    function getCategoryIcon(category) {
-        const icons = {
-            'baby': '👶',
-            'boy': '👔',
-            'girl': '👗',
-            'party': '🎉',
-            'accessories': '🎀'
-        };
-        return icons[category] || '👕';
+async function loadCheckoutData() {
+    // Verificar que hay productos en el carrito
+    const cart = API.cart.getCart();
+    if (cart.length === 0) {
+        window.location.href = '/cart.html';
+        return;
     }
 
-    /**
-     * Formatear precio
-     */
-    function formatPrice(price) {
-        return `$${price.toLocaleString('es-AR')}`;
-    }
+    // Validar stock con el backend
+    await validateCartStock();
 
-    /**
-     * Validar email
-     */
-    function isValidEmail(email) {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
-    }
+    // Cargar resumen de orden
+    loadOrderSummary();
 
-    /**
-     * Validar teléfono argentino
-     */
-    function isValidPhone(phone) {
-        const regex = /^(\+?54)?[\s\-]?9?[\s\-]?\d{2,4}[\s\-]?\d{6,8}$/;
-        return regex.test(phone);
-    }
+    // Cargar direcciones guardadas
+    await loadSavedAddresses();
 
-    /**
-     * Mostrar error en campo
-     */
-    function showFieldError(fieldId, message) {
-        const field = document.getElementById(fieldId);
-        const errorElement = document.getElementById(`${fieldId}Error`);
-        
-        if (field) {
-            field.classList.add('error');
+    // Cargar información del usuario
+    await loadUserInfo();
+}
+
+// ========================================
+// VALIDAR STOCK
+// ========================================
+
+async function validateCartStock() {
+    try {
+        const validation = await API.cart.validateStock();
+
+        if (!validation.valid) {
+            // Hay productos sin stock suficiente
+            let message = 'Algunos productos no tienen stock suficiente:\n\n';
+            
+            validation.invalidItems.forEach(item => {
+                message += `- ${item.id}: solicitaste ${item.requestedQuantity}, disponible: ${item.availableStock || 0}\n`;
+            });
+
+            alert(message);
+            window.location.href = '/cart.html';
         }
-        
-        if (errorElement) {
-            errorElement.textContent = message;
-            errorElement.classList.add('show');
-        }
+    } catch (error) {
+        console.error('Error validando stock:', error);
+        showNotification('Error al validar disponibilidad de productos', 'error');
     }
+}
 
-    /**
-     * Limpiar error de campo
-     */
-    function clearFieldError(fieldId) {
-        const field = document.getElementById(fieldId);
-        const errorElement = document.getElementById(`${fieldId}Error`);
+// ========================================
+// CARGAR INFO DEL USUARIO
+// ========================================
+
+async function loadUserInfo() {
+    try {
+        const user = await API.auth.getCurrentUser();
         
-        if (field) {
-            field.classList.remove('error');
-        }
-        
-        if (errorElement) {
-            errorElement.textContent = '';
-            errorElement.classList.remove('show');
-        }
+        // Prellenar datos del formulario
+        document.getElementById('firstName').value = user.firstName || '';
+        document.getElementById('lastName').value = user.lastName || '';
+        document.getElementById('email').value = user.email || '';
+        document.getElementById('phone').value = user.phone || '';
+
+    } catch (error) {
+        console.error('Error cargando usuario:', error);
     }
+}
 
-    /**
-     * Limpiar todos los errores
-     */
-    function clearAllErrors() {
-        const errorElements = document.querySelectorAll('.form-error');
-        const inputElements = document.querySelectorAll('.form-input, .form-select');
-        
-        errorElements.forEach(el => {
-            el.textContent = '';
-            el.classList.remove('show');
-        });
-        
-        inputElements.forEach(el => {
-            el.classList.remove('error');
-        });
-    }
+// ========================================
+// DIRECCIONES GUARDADAS
+// ========================================
 
-    // ===== CARRITO =====
+async function loadSavedAddresses() {
+    try {
+        const addresses = await API.users.getAddresses();
+        const savedAddressesContainer = document.getElementById('savedAddresses');
 
-    /**
-     * Cargar carrito desde localStorage
-     */
-    function loadCart() {
-        if (window.AGUARDI && window.AGUARDI.getCart) {
-            state.cart = window.AGUARDI.getCart();
+        if (addresses.length > 0 && savedAddressesContainer) {
+            savedAddressesContainer.innerHTML = `
+                <h3>Direcciones Guardadas</h3>
+                <div class="addresses-list">
+                    ${addresses.map(address => `
+                        <div class="address-card ${address.isDefault ? 'default' : ''}" 
+                             onclick="selectSavedAddress(${address.id})">
+                            <div class="address-info">
+                                <strong>${address.street}, ${address.number}</strong>
+                                ${address.floor ? `<p>Piso ${address.floor} ${address.apartment ? ', Depto ' + address.apartment : ''}</p>` : ''}
+                                <p>${address.city}, ${address.province}</p>
+                                <p>CP: ${address.postalCode}</p>
+                                ${address.isDefault ? '<span class="badge">Predeterminada</span>' : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="margin-top: 15px;">
+                    <button type="button" class="btn btn-secondary" onclick="showNewAddressForm()">
+                        + Nueva Dirección
+                    </button>
+                </div>
+            `;
+
+            // Guardar direcciones para uso posterior
+            window.savedAddresses = addresses;
+
+            // Seleccionar dirección predeterminada automáticamente
+            const defaultAddress = addresses.find(a => a.isDefault);
+            if (defaultAddress) {
+                selectSavedAddress(defaultAddress.id);
+            }
         } else {
-            state.cart = [];
+            showNewAddressForm();
         }
-        
-        // Si el carrito está vacío, redirigir
-        if (state.cart.length === 0) {
-            window.location.href = 'cart.html';
-            return;
-        }
-        
-        calculateTotals();
-        renderSummary();
+    } catch (error) {
+        console.error('Error cargando direcciones:', error);
+        showNewAddressForm();
+    }
+}
+
+function selectSavedAddress(addressId) {
+    selectedAddress = window.savedAddresses.find(a => a.id === addressId);
+
+    // Marcar visualmente la dirección seleccionada
+    document.querySelectorAll('.address-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    event.target.closest('.address-card').classList.add('selected');
+
+    // Ocultar formulario de nueva dirección
+    const newAddressForm = document.getElementById('newAddressForm');
+    if (newAddressForm) {
+        newAddressForm.style.display = 'none';
     }
 
-    /**
-     * Calcular totales
-     */
-    function calculateTotals() {
-        // Subtotal
-        state.subtotal = state.cart.reduce((sum, item) => {
-            return sum + (item.price * item.quantity);
-        }, 0);
-        
-        // Envío
-        if (state.subtotal >= CONFIG.SHIPPING_FREE_THRESHOLD) {
-            state.shipping = 0;
-        } else {
-            state.shipping = CONFIG.SHIPPING_COST;
-        }
-        
-        // Total
-        state.total = state.subtotal + state.shipping;
+    // Calcular envío
+    calculateShipping();
+}
+
+function showNewAddressForm() {
+    selectedAddress = null;
+    const newAddressForm = document.getElementById('newAddressForm');
+    const savedAddressesContainer = document.getElementById('savedAddresses');
+
+    if (newAddressForm) {
+        newAddressForm.style.display = 'block';
     }
 
-    /**
-     * Renderizar resumen del pedido
-     */
-    function renderSummary() {
-        // Renderizar productos
-        elements.summaryProducts.innerHTML = '';
-        
-        state.cart.forEach(item => {
-            const productElement = createSummaryProductElement(item);
-            elements.summaryProducts.appendChild(productElement);
-        });
-        
-        // Renderizar totales
-        elements.summarySubtotal.textContent = formatPrice(state.subtotal);
-        
-        if (state.shipping === 0) {
-            elements.summaryShipping.textContent = '¡Gratis!';
-            elements.summaryShipping.style.color = 'var(--success)';
-            elements.summaryShipping.style.fontWeight = '700';
-        } else {
-            elements.summaryShipping.textContent = formatPrice(state.shipping);
-            elements.summaryShipping.style.color = '';
-            elements.summaryShipping.style.fontWeight = '';
-        }
-        
-        elements.summaryTotal.textContent = formatPrice(state.total);
-    }
+    // Desmarcar direcciones guardadas
+    document.querySelectorAll('.address-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+}
 
-    /**
-     * Crear elemento de producto en resumen
-     */
-    function createSummaryProductElement(item) {
-        const div = document.createElement('div');
-        div.className = 'summary-product';
-        
-        const itemTotal = item.price * item.quantity;
-        
-        div.innerHTML = `
-            <div class="summary-product-image">
-                <div class="image-placeholder">
-                    <span class="placeholder-icon">${getCategoryIcon(item.category)}</span>
+// ========================================
+// RESUMEN DE ORDEN
+// ========================================
+
+function loadOrderSummary() {
+    const cart = API.cart.getCart();
+    const subtotal = API.cart.getTotal();
+    
+    // Renderizar items
+    const orderItemsEl = document.getElementById('orderItems');
+    if (orderItemsEl) {
+        orderItemsEl.innerHTML = cart.map(item => `
+            <div class="order-item">
+                <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.name}">
+                <div class="item-details">
+                    <h4>${item.name}</h4>
+                    <p>Cantidad: ${item.quantity}</p>
+                </div>
+                <div class="item-price">
+                    $${(item.price * item.quantity).toFixed(2)}
                 </div>
             </div>
-            <div class="summary-product-info">
-                <div class="summary-product-name">${item.name}</div>
-                <div class="summary-product-details">Cantidad: ${item.quantity}</div>
-            </div>
-            <div class="summary-product-price">${formatPrice(itemTotal)}</div>
-        `;
-        
-        return div;
+        `).join('');
     }
 
-    // ===== VALIDACIÓN DEL FORMULARIO =====
+    // Actualizar totales
+    updateOrderTotals(subtotal, shippingCost);
+}
 
-    /**
-     * Validar formulario completo
-     */
-    function validateForm() {
-        clearAllErrors();
-        let isValid = true;
-        
-        // Nombre completo
-        if (!elements.fullName.value.trim()) {
-            showFieldError('fullName', 'El nombre es obligatorio');
-            isValid = false;
-        } else if (elements.fullName.value.trim().length < 3) {
-            showFieldError('fullName', 'El nombre debe tener al menos 3 caracteres');
-            isValid = false;
+function updateOrderTotals(subtotal, shipping) {
+    const total = subtotal + shipping;
+
+    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+    document.getElementById('shipping').textContent = shipping === 0 ? 'Gratis' : `$${shipping.toFixed(2)}`;
+    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+}
+
+// ========================================
+// CALCULAR ENVÍO
+// ========================================
+
+async function calculateShipping() {
+    try {
+        let shippingInfo;
+
+        if (selectedAddress) {
+            // Usar dirección guardada
+            shippingInfo = {
+                street: selectedAddress.street,
+                number: selectedAddress.number,
+                floor: selectedAddress.floor,
+                apartment: selectedAddress.apartment,
+                city: selectedAddress.city,
+                province: selectedAddress.province,
+                postalCode: selectedAddress.postalCode,
+                country: selectedAddress.country || 'Argentina'
+            };
+        } else {
+            // Usar dirección del formulario
+            shippingInfo = {
+                street: document.getElementById('street')?.value,
+                number: document.getElementById('number')?.value,
+                floor: document.getElementById('floor')?.value,
+                apartment: document.getElementById('apartment')?.value,
+                city: document.getElementById('city')?.value,
+                province: document.getElementById('province')?.value,
+                postalCode: document.getElementById('postalCode')?.value,
+                country: 'Argentina'
+            };
         }
-        
-        // Email
-        if (!elements.email.value.trim()) {
-            showFieldError('email', 'El email es obligatorio');
-            isValid = false;
-        } else if (!isValidEmail(elements.email.value.trim())) {
-            showFieldError('email', 'El email no es válido');
-            isValid = false;
-        }
-        
-        // Teléfono
-        if (!elements.phone.value.trim()) {
-            showFieldError('phone', 'El teléfono es obligatorio');
-            isValid = false;
-        } else if (!isValidPhone(elements.phone.value.trim())) {
-            showFieldError('phone', 'El teléfono no es válido');
-            isValid = false;
-        }
-        
-        // Provincia
-        if (!elements.province.value) {
-            showFieldError('province', 'Selecciona una provincia');
-            isValid = false;
-        }
-        
-        // Ciudad
-        if (!elements.city.value.trim()) {
-            showFieldError('city', 'La localidad es obligatoria');
-            isValid = false;
-        }
-        
-        // Dirección
-        if (!elements.address.value.trim()) {
-            showFieldError('address', 'La dirección es obligatoria');
-            isValid = false;
-        }
-        
-        // Código postal
-        if (!elements.postalCode.value.trim()) {
-            showFieldError('postalCode', 'El código postal es obligatorio');
-            isValid = false;
-        }
-        
-        // Términos y condiciones
-        if (!elements.terms.checked) {
-            showFieldError('terms', 'Debes aceptar los términos y condiciones');
-            isValid = false;
-        }
-        
-        return isValid;
+
+        // Llamar a la API para calcular envío
+        shippingCost = await API.orders.calculateShipping(shippingInfo);
+
+        // Actualizar totales
+        const subtotal = API.cart.getTotal();
+        updateOrderTotals(subtotal, shippingCost);
+
+    } catch (error) {
+        console.error('Error calculando envío:', error);
+        shippingCost = 2500; // Costo default
+        const subtotal = API.cart.getTotal();
+        updateOrderTotals(subtotal, shippingCost);
     }
+}
 
-    /**
-     * Obtener método de pago seleccionado
-     */
-    function getSelectedPaymentMethod() {
-        const selected = Array.from(elements.paymentMethods).find(radio => radio.checked);
-        return selected ? selected.value : null;
-    }
+// ========================================
+// PROCESAR CHECKOUT
+// ========================================
 
-    /**
-     * Obtener nombre del método de pago
-     */
-    function getPaymentMethodName(value) {
-        const names = {
-            'transfer': 'Transferencia Bancaria',
-            'mercadopago': 'MercadoPago',
-            'cash': 'Efectivo'
-        };
-        return names[value] || value;
-    }
-
-    // ===== PROCESAMIENTO DEL PEDIDO =====
-
-    /**
-     * Generar mensaje de WhatsApp
-     */
-    function generateWhatsAppMessage(orderData) {
-        let message = `🛍️ *NUEVO PEDIDO - AGUARDI*\n\n`;
-        
-        // Información del cliente
-        message += `*📋 DATOS DEL CLIENTE*\n`;
-        message += `Nombre: ${orderData.fullName}\n`;
-        message += `Email: ${orderData.email}\n`;
-        message += `Teléfono: ${orderData.phone}\n\n`;
-        
-        // Dirección de envío
-        message += `*📍 DIRECCIÓN DE ENVÍO*\n`;
-        message += `Provincia: ${orderData.province}\n`;
-        message += `Localidad: ${orderData.city}\n`;
-        message += `Dirección: ${orderData.address}\n`;
-        message += `Código Postal: ${orderData.postalCode}\n`;
-        if (orderData.addressDetails) {
-            message += `Detalles: ${orderData.addressDetails}\n`;
-        }
-        message += `\n`;
-        
-        // Productos
-        message += `*🛒 PRODUCTOS*\n`;
-        state.cart.forEach((item, index) => {
-            message += `${index + 1}. ${item.name}\n`;
-            message += `   Cantidad: ${item.quantity}\n`;
-            message += `   Precio unitario: ${formatPrice(item.price)}\n`;
-            message += `   Subtotal: ${formatPrice(item.price * item.quantity)}\n\n`;
-        });
-        
-        // Totales
-        message += `*💰 RESUMEN*\n`;
-        message += `Subtotal: ${formatPrice(state.subtotal)}\n`;
-        message += `Envío: ${state.shipping === 0 ? '¡Gratis!' : formatPrice(state.shipping)}\n`;
-        message += `*Total: ${formatPrice(state.total)}*\n\n`;
-        
-        // Método de pago
-        message += `*💳 MÉTODO DE PAGO*\n`;
-        message += `${getPaymentMethodName(orderData.paymentMethod)}\n\n`;
-        
-        // Notas adicionales
-        if (orderData.notes) {
-            message += `*📝 NOTAS*\n`;
-            message += `${orderData.notes}\n\n`;
-        }
-        
-        message += `---\n`;
-        message += `Pedido generado desde aguardi.com`;
-        
-        return message;
-    }
-
-    /**
-     * Procesar pedido
-     */
-    async function processOrder(formData) {
-        // Generar ID de pedido
-        const orderId = `ORD-${Date.now()}`;
-        
-        // Crear objeto de pedido
-        const order = {
-            id: orderId,
-            date: new Date().toISOString(),
-            customer: {
-                fullName: formData.fullName,
-                email: formData.email,
-                phone: formData.phone
-            },
-            shipping: {
-                province: formData.province,
-                city: formData.city,
-                address: formData.address,
-                postalCode: formData.postalCode,
-                details: formData.addressDetails || ''
-            },
-            items: state.cart,
-            payment: {
-                method: formData.paymentMethod,
-                status: 'pending'
-            },
-            totals: {
-                subtotal: state.subtotal,
-                shipping: state.shipping,
-                total: state.total
-            },
-            notes: formData.notes || '',
-            status: 'pending'
-        };
-        
-        // Guardar pedido en localStorage (mock)
-        const orders = JSON.parse(localStorage.getItem('aguardi_orders') || '[]');
-        orders.push(order);
-        localStorage.setItem('aguardi_orders', JSON.stringify(orders));
-        
-        // Limpiar carrito
-        if (window.AGUARDI && window.AGUARDI.saveCart) {
-            window.AGUARDI.saveCart([]);
-        }
-        
-        return order;
-    }
-
-    /**
-     * Enviar pedido por WhatsApp
-     */
-    function sendToWhatsApp(orderData) {
-        const message = generateWhatsAppMessage(orderData);
-        const encodedMessage = encodeURIComponent(message);
-        const whatsappURL = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodedMessage}`;
-        
-        window.open(whatsappURL, '_blank');
-    }
-
-    /**
-     * Manejar envío del formulario
-     */
-    async function handleFormSubmit(e) {
+const checkoutForm = document.getElementById('checkoutForm');
+if (checkoutForm) {
+    checkoutForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        // Validar formulario
-        if (!validateForm()) {
-            // Scroll al primer error
-            const firstError = document.querySelector('.form-error.show');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            return;
-        }
-        
-        // Recopilar datos del formulario
-        const formData = {
-            fullName: elements.fullName.value.trim(),
-            email: elements.email.value.trim(),
-            phone: elements.phone.value.trim(),
-            province: elements.province.value,
-            city: elements.city.value.trim(),
-            address: elements.address.value.trim(),
-            postalCode: elements.postalCode.value.trim(),
-            addressDetails: elements.addressDetails.value.trim(),
-            paymentMethod: getSelectedPaymentMethod(),
-            notes: elements.notes.value.trim()
-        };
-        
+
+        const submitBtn = checkoutForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+
         try {
-            // Procesar pedido
-            const order = await processOrder(formData);
-            
-            // Enviar por WhatsApp
-            sendToWhatsApp(formData);
-            
-            // Mostrar notificación
-            if (window.AGUARDI && window.AGUARDI.showNotification) {
-                window.AGUARDI.showNotification('¡Pedido confirmado! Te contactaremos pronto', 'success');
+            // Deshabilitar botón
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Procesando...';
+
+            // Preparar datos de envío
+            let shippingInfo;
+
+            if (selectedAddress) {
+                // Usar dirección guardada
+                shippingInfo = {
+                    recipientName: `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`,
+                    recipientPhone: document.getElementById('phone').value,
+                    street: selectedAddress.street,
+                    number: selectedAddress.number,
+                    floor: selectedAddress.floor,
+                    apartment: selectedAddress.apartment,
+                    city: selectedAddress.city,
+                    province: selectedAddress.province,
+                    postalCode: selectedAddress.postalCode,
+                    country: selectedAddress.country || 'Argentina'
+                };
+            } else {
+                // Usar nueva dirección del formulario
+                shippingInfo = {
+                    recipientName: `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`,
+                    recipientPhone: document.getElementById('phone').value,
+                    street: document.getElementById('street').value,
+                    number: document.getElementById('number').value,
+                    floor: document.getElementById('floor')?.value || null,
+                    apartment: document.getElementById('apartment')?.value || null,
+                    city: document.getElementById('city').value,
+                    province: document.getElementById('province').value,
+                    postalCode: document.getElementById('postalCode').value,
+                    country: 'Argentina'
+                };
             }
-            
-            // Redirigir a página de confirmación después de un delay
-            setTimeout(() => {
-                window.location.href = 'confirmation.html';
-            }, 2000);
-            
+
+            // Preparar items de la orden
+            const cart = API.cart.getCart();
+            const items = cart.map(item => ({
+                productId: item.id,
+                quantity: item.quantity
+            }));
+
+            // Crear orden
+            const orderData = {
+                items: items,
+                shippingInfo: shippingInfo,
+                customerNotes: document.getElementById('orderNotes')?.value || null
+            };
+
+            const order = await API.orders.createOrder(orderData);
+
+            console.log('Orden creada:', order);
+
+            // Crear pago y obtener preferencia de MercadoPago
+            const payment = await API.payments.createPayment(order.id);
+
+            console.log('Pago creado:', payment);
+
+            // Limpiar carrito
+            API.cart.clearCart();
+
+            // Redirigir a MercadoPago
+            if (payment.initPoint) {
+                window.location.href = payment.initPoint;
+            } else {
+                // Si no hay initPoint, ir a confirmación
+                window.location.href = `/confirmation.html?orderNumber=${order.orderNumber}`;
+            }
+
         } catch (error) {
-            console.error('Error al procesar pedido:', error);
-            if (window.AGUARDI && window.AGUARDI.showNotification) {
-                window.AGUARDI.showNotification('Error al procesar el pedido. Intenta nuevamente.', 'error');
+            console.error('Error en checkout:', error);
+            
+            let errorMessage = 'Error al procesar la orden. Intenta nuevamente.';
+            
+            if (error.message) {
+                errorMessage = error.message;
             }
+
+            if (error.status === 400) {
+                errorMessage = 'Datos inválidos. Verifica la información ingresada.';
+            }
+
+            if (error.message && error.message.includes('stock')) {
+                errorMessage = 'Algunos productos no tienen stock suficiente. Por favor, revisa tu carrito.';
+            }
+
+            showNotification(errorMessage, 'error');
+
+            // Re-habilitar botón
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
         }
-    }
+    });
+}
 
-    // ===== EVENT LISTENERS =====
+// ========================================
+// VALIDACIÓN DE FORMULARIO
+// ========================================
 
-    /**
-     * Inicializar event listeners
-     */
-    function initEventListeners() {
-        // Form submit
-        elements.checkoutForm.addEventListener('submit', handleFormSubmit);
-        
-        // Limpiar errores al escribir
-        const inputFields = [
-            elements.fullName,
-            elements.email,
-            elements.phone,
-            elements.province,
-            elements.city,
-            elements.address,
-            elements.postalCode
-        ];
-        
-        inputFields.forEach(field => {
-            if (field) {
-                field.addEventListener('input', () => {
-                    clearFieldError(field.id);
-                });
-            }
+function setupFormValidation() {
+    const requiredFields = checkoutForm?.querySelectorAll('[required]');
+    
+    requiredFields?.forEach(field => {
+        field.addEventListener('blur', () => {
+            validateField(field);
         });
-        
-        // Términos
-        if (elements.terms) {
-            elements.terms.addEventListener('change', () => {
-                clearFieldError('terms');
-            });
-        }
-    }
+    });
+}
 
-    // ===== INICIALIZACIÓN =====
-
-    /**
-     * Inicializar checkout
-     */
-    function init() {
-        loadCart();
-        initEventListeners();
-        
-        console.log('Checkout AGUARDI inicializado');
-    }
-
-    // Inicializar cuando el DOM esté listo
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+function validateField(field) {
+    if (field.value.trim() === '') {
+        field.classList.add('error');
+        return false;
     } else {
-        init();
+        field.classList.remove('error');
+        return true;
+    }
+}
+
+// ========================================
+// PROVINCIAS ARGENTINAS
+// ========================================
+
+function setupProvinceSelect() {
+    const provinceSelect = document.getElementById('province');
+    if (!provinceSelect) return;
+
+    const provinces = [
+        'Buenos Aires', 'CABA', 'Catamarca', 'Chaco', 'Chubut', 'Córdoba',
+        'Corrientes', 'Entre Ríos', 'Formosa', 'Jujuy', 'La Pampa', 'La Rioja',
+        'Mendoza', 'Misiones', 'Neuquén', 'Río Negro', 'Salta', 'San Juan',
+        'San Luis', 'Santa Cruz', 'Santa Fe', 'Santiago del Estero',
+        'Tierra del Fuego', 'Tucumán'
+    ];
+
+    provinceSelect.innerHTML = `
+        <option value="">Seleccionar provincia</option>
+        ${provinces.map(p => `<option value="${p}">${p}</option>`).join('')}
+    `;
+}
+
+// ========================================
+// INICIALIZACIÓN
+// ========================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Verificar autenticación
+    if (!API.token.isAuthenticated()) {
+        window.location.href = '/login.html?returnUrl=/checkout.html';
+        return;
     }
 
-})();
+    // Cargar datos del checkout
+    loadCheckoutData();
+
+    // Setup provincia select
+    setupProvinceSelect();
+
+    // Setup validación
+    setupFormValidation();
+
+    // Event listener para campos de dirección (calcular envío cuando cambian)
+    const addressFields = ['street', 'city', 'province', 'postalCode'];
+    addressFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('blur', calculateShipping);
+        }
+    });
+});
+
+// Hacer funciones disponibles globalmente
+window.selectSavedAddress = selectSavedAddress;
+window.showNewAddressForm = showNewAddressForm;

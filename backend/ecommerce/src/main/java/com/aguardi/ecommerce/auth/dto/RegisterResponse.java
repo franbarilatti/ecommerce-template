@@ -25,7 +25,7 @@ public class RegisterResponse {
 
     // Token incluido para login automático después del registro
     private String token;
-    private String tokenType;
+
 
     @Builder.Default
     private String tokenType = "Bearer";
